@@ -14,9 +14,7 @@ class Paddle(Turtle):
         self.goto(self.x, self.y)
 
     def up(self):
-        self.forward(10)
-        self.screen.update()
+        self.forward(5)
 
     def down(self):
-        self.backward(10)
-        self.screen.update()
+        self.backward(5)
