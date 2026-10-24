@@ -8,6 +8,15 @@ class Paddle(Turtle):
         self.y = y
         self.shape("square")
         self.color("white")
-        self.shapesize(stretch_wid=5, stretch_len=1)
+        self.shapesize(stretch_wid=1, stretch_len=5)
+        self.left(90)
         self.penup()
         self.goto(self.x, self.y)
+
+    def up(self):
+        self.forward(10)
+        self.screen.update()
+
+    def down(self):
+        self.backward(10)
+        self.screen.update()
