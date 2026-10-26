@@ -60,6 +60,22 @@ class Main:
         # Main game loop for running the game.
         self.game_is_on = True
         while self.game_is_on:
+
+            # Setting the pong ball to go forward continuously.
+            self.pong_ball.forward(1)
+
+            # Pong ball to wall collision check
+            if self.pong_ball.ycor() >= (SCREEN_HEIGHT / 2) - 10:
+                pass
+            elif self.pong_ball.ycor() <= (SCREEN_HEIGHT / -2) + 10:
+                pass
+
+            # Pong ball to paddle collision check
+
+
+            # If ball goes past either paddle, point for the other player, and update the score.
+
+
             # time.sleep used to control the speed of the gameplay.
             time.sleep(0.01)
 
