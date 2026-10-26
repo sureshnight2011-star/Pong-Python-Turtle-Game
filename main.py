@@ -54,15 +54,24 @@ class Main:
         self.game_is_on = True
         while self.game_is_on:
             time.sleep(0.01)
+            if self.left_paddle.ycor() >= (SCREEN_HEIGHT / 2) - 50:
+                self.left_paddle.sety((SCREEN_HEIGHT / 2) - 50)
+            elif self.left_paddle.ycor() <= (SCREEN_HEIGHT / -2) + 50:
+                self.left_paddle.sety((SCREEN_HEIGHT / -2) + 50)
+
+            if self.right_paddle.ycor() >= (SCREEN_HEIGHT / 2) - 50:
+                self.right_paddle.sety((SCREEN_HEIGHT / 2) - 50)
+            elif self.right_paddle.ycor() <= (SCREEN_HEIGHT / -2) + 50:
+                self.right_paddle.sety((SCREEN_HEIGHT / -2) + 50)
 
             if self.keys_pressed["Up"]:
                 self.right_paddle.up()
-            if self.keys_pressed["Down"]:
+            elif self.keys_pressed["Down"]:
                 self.right_paddle.down()
 
             if self.keys_pressed["w"]:
                 self.left_paddle.up()
-            if self.keys_pressed["s"]:
+            elif self.keys_pressed["s"]:
                 self.left_paddle.down()
 
             self.screen.update()
