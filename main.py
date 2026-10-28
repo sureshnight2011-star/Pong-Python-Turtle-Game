@@ -71,10 +71,10 @@ class Main:
                 self.pong_ball.dy *= -1
 
             # Pong ball to paddle collision check
-            '''if self.pong_ball.ycor() <= (SCREEN_HEIGHT / -2) + 50:
+            if self.pong_ball.xcor() == (SCREEN_HEIGHT / -2) + 65 and (self.left_paddle.ycor() - 50 <= self.pong_ball.ycor() <= self.left_paddle.ycor() + 50):
                 self.pong_ball.dx *= -1
-            elif self.pong_ball.ycor() >= (SCREEN_HEIGHT / 2) - 60:
-                self.pong_ball.dx *= -1'''
+            elif self.pong_ball.xcor() == (SCREEN_HEIGHT / 2) - 75 and (self.right_paddle.ycor() - 50 <= self.pong_ball.ycor() <= self.right_paddle.ycor() + 50):
+                self.pong_ball.dx *= -1
 
             # If ball goes past either paddle, point for the other player, and update the score.
 
