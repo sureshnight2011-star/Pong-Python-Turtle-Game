@@ -1,10 +1,10 @@
 # Things to Add:
 # 1. Implement the ramp up speed feature.
-# 2. Implement the target max score feature.
-# 3. Play Again Feature
+# 2. Play Again Feature
 from paddle import Paddle
 from ball import Ball
 from scoreboard import ScoreBoard
+from winning_screen import WinningScreen
 from turtle import Screen
 import time
 
@@ -19,6 +19,7 @@ class Main:
         self.right_paddle = Paddle(player="Player 2", x=240, y=0)
         self.pong_ball = Ball()
         self.score_board = ScoreBoard()
+        self.winning_screen = WinningScreen()
 
         # Setting up the screen.
         self.screen = Screen()
@@ -71,6 +72,7 @@ class Main:
             # Set the x and y coordinate, so the ball can move after every loop.
             self.pong_ball.setx(self.pong_ball.xcor() + self.pong_ball.dx)
             self.pong_ball.sety(self.pong_ball.ycor() + self.pong_ball.dy)
+
             # Pong ball to wall collision check
             if self.pong_ball.ycor() >= (SCREEN_HEIGHT / 2) - 10:
                 self.pong_ball.dy *= -1
@@ -96,6 +98,17 @@ class Main:
                 self.pong_ball.dx *= -1
                 self.pong_ball.dy *= -1
                 self.score_board.left_score_update()
+
+            # Checking if the target max score was hit.
+            if self.score_board.left_score == MAX_SCORE:
+                self.winning_screen.left_paddle()
+                self.pong_ball.hideturtle()
+                self.game_is_on = False
+
+            elif self.score_board.right_score == MAX_SCORE:
+                self.winning_screen.right_paddle()
+                self.pong_ball.hideturtle()
+                self.game_is_on = False
 
             # Setting up the wall boundaries for the left paddle.
             if self.left_paddle.ycor() >= (SCREEN_HEIGHT / 2) - 50:
@@ -126,6 +139,8 @@ class Main:
 
             # time.sleep used to control the speed of the gameplay.
             time.sleep(0.01)
+
+        self.screen.exitonclick()
 
 if __name__ == '__main__':
     main = Main()
