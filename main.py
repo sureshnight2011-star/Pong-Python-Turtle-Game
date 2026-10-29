@@ -1,3 +1,7 @@
+# Things to Add:
+# 1. Implement the ramp up speed feature.
+# 2. Implement the target max score feature.
+# 3. Play Again Feature
 from paddle import Paddle
 from ball import Ball
 from scoreboard import ScoreBoard
@@ -6,6 +10,7 @@ import time
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
+MAX_SCORE = 10
 
 class Main:
     def __init__(self):
@@ -57,13 +62,15 @@ class Main:
         self.screen.onkeypress(press_s, "s")
         self.screen.onkeyrelease(release_s, "s")
 
+        # Called this to set up the initial score on the top of the window.
+        self.score_board.initialize()
+
         # Main game loop for running the game.
         self.game_is_on = True
         while self.game_is_on:
             # Set the x and y coordinate, so the ball can move after every loop.
             self.pong_ball.setx(self.pong_ball.xcor() + self.pong_ball.dx)
             self.pong_ball.sety(self.pong_ball.ycor() + self.pong_ball.dy)
-
             # Pong ball to wall collision check
             if self.pong_ball.ycor() >= (SCREEN_HEIGHT / 2) - 10:
                 self.pong_ball.dy *= -1
@@ -77,10 +84,18 @@ class Main:
                 self.pong_ball.dx *= -1
 
             # If ball goes past either paddle, point for the other player, and update the score.
-
-
-            # time.sleep used to control the speed of the gameplay.
-            time.sleep(0.01)
+            if self.pong_ball.xcor() < SCREEN_WIDTH / -2:
+                self.pong_ball.setx(0)
+                self.pong_ball.sety(0)
+                self.pong_ball.dx *= -1
+                self.pong_ball.dy *= -1
+                self.score_board.right_score_update()
+            elif self.pong_ball.xcor() > SCREEN_WIDTH / 2:
+                self.pong_ball.setx(0)
+                self.pong_ball.sety(0)
+                self.pong_ball.dx *= -1
+                self.pong_ball.dy *= -1
+                self.score_board.left_score_update()
 
             # Setting up the wall boundaries for the left paddle.
             if self.left_paddle.ycor() >= (SCREEN_HEIGHT / 2) - 50:
@@ -108,6 +123,9 @@ class Main:
 
             # Updating the screen after every loop in the while loop.
             self.screen.update()
+
+            # time.sleep used to control the speed of the gameplay.
+            time.sleep(0.01)
 
 if __name__ == '__main__':
     main = Main()
