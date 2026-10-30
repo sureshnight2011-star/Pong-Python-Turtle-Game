@@ -66,9 +66,18 @@ class Main:
         # Called this to set up the initial score on the top of the window.
         self.score_board.initialize()
 
+        # Setting the trigger timer for speed to increase.
+        '''trigger_time = time.time() + 5.0'''
+
         # Main game loop for running the game.
         self.game_is_on = True
         while self.game_is_on:
+            # Set the conditional to check if the current time of the program running is greater than or equal to the trigger time.
+            '''if time.time() >= trigger_time:
+                self.pong_ball.dx *= 1.1
+                self.pong_ball.dy *= 1.1
+                trigger_time = time.time() + 5.0'''
+
             # Set the x and y coordinate, so the ball can move after every loop.
             self.pong_ball.setx(self.pong_ball.xcor() + self.pong_ball.dx)
             self.pong_ball.sety(self.pong_ball.ycor() + self.pong_ball.dy)
