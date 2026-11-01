@@ -1,6 +1,3 @@
-# Things to Add:
-# 1. Implement the ramp up speed feature.
-# 2. Play Again Feature
 from paddle import Paddle
 from ball import Ball
 from scoreboard import ScoreBoard
@@ -10,7 +7,7 @@ import time
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
-MAX_SCORE = 10
+MAX_SCORE = 1
 
 class Main:
     def __init__(self):
@@ -63,20 +60,48 @@ class Main:
         self.screen.onkeypress(press_s, "s")
         self.screen.onkeyrelease(release_s, "s")
 
-        # Called this to set up the initial score on the top of the window.
+        self.reset_game_state()
+
+    def reset_game_state(self):
+        self.game_running = True
+
+        # Reset ball visual and values
+        self.pong_ball.showturtle()
+        self.pong_ball.goto(0, 0)
+        self.pong_ball.dx = 1
+        self.pong_ball.dy = 1
+
+        # Reset paddles
+        self.left_paddle.goto(-250, 0)
+        self.right_paddle.goto(240, 0)
+
+        # Reset scores
+        self.score_board.clear()
+        self.score_board.left_score = 0
+        self.score_board.right_score = 0
         self.score_board.initialize()
 
-        # Setting the trigger timer for speed to increase.
-        '''trigger_time = time.time() + 5.0'''
+        # Clear winning screens
+        self.winning_screen.clear()
 
-        # Main game loop for running the game.
-        self.game_is_on = True
-        while self.game_is_on:
+        # Un-pause speed tracking
+        self.trigger_time = time.time() + 5.0
+
+        # Force the screen to listen to the keys again.
+        self.screen.listen()
+
+        # Launch game loop
+        self.run_game()
+
+    # Main game loop for running the game.
+    def run_game(self):
+        while self.game_running:
             # Set the conditional to check if the current time of the program running is greater than or equal to the trigger time.
-            '''if time.time() >= trigger_time:
-                self.pong_ball.dx *= 1.1
-                self.pong_ball.dy *= 1.1
-                trigger_time = time.time() + 5.0'''
+            if time.time() >= self.trigger_time:
+               self.pong_ball.dx *= 1.2
+               self.pong_ball.dy *= 1.2
+               print(f"⚡ Speed Boosted! dx: {self.pong_ball.dx:.2f}, dy: {self.pong_ball.dy:.2f}")
+               self.trigger_time = time.time() + 5.0
 
             # Set the x and y coordinate, so the ball can move after every loop.
             self.pong_ball.setx(self.pong_ball.xcor() + self.pong_ball.dx)
@@ -85,39 +110,47 @@ class Main:
             # Pong ball to wall collision check
             if self.pong_ball.ycor() >= (SCREEN_HEIGHT / 2) - 10:
                 self.pong_ball.dy *= -1
+                self.pong_ball.sety((SCREEN_HEIGHT / 2) - 10)
             elif self.pong_ball.ycor() <= (SCREEN_HEIGHT / -2) + 10:
                 self.pong_ball.dy *= -1
+                self.pong_ball.sety((SCREEN_HEIGHT / -2) + 10)
 
             # Pong ball to paddle collision check
-            if self.pong_ball.xcor() == (SCREEN_HEIGHT / -2) + 65 and (self.left_paddle.ycor() - 50 <= self.pong_ball.ycor() <= self.left_paddle.ycor() + 50):
-                self.pong_ball.dx *= -1
-            elif self.pong_ball.xcor() == (SCREEN_HEIGHT / 2) - 75 and (self.right_paddle.ycor() - 50 <= self.pong_ball.ycor() <= self.right_paddle.ycor() + 50):
-                self.pong_ball.dx *= -1
+            if self.pong_ball.xcor() <= (SCREEN_WIDTH / -2) + 65 and self.pong_ball.dx < 0:
+                if self.left_paddle.ycor() - 55 <= self.pong_ball.ycor() <= self.left_paddle.ycor() + 55:
+                    self.pong_ball.dx *= -1
+                    self.pong_ball.setx((SCREEN_WIDTH / -2) + 70)
+
+
+            elif self.pong_ball.xcor() >= (SCREEN_WIDTH / 2) - 75 and self.pong_ball.dx > 0:
+                if self.right_paddle.ycor() - 55 <= self.pong_ball.ycor() <= self.right_paddle.ycor() + 55:
+                    self.pong_ball.dx *= -1
+                    self.pong_ball.setx((SCREEN_WIDTH / 2) - 80)
 
             # If ball goes past either paddle, point for the other player, and update the score.
             if self.pong_ball.xcor() < SCREEN_WIDTH / -2:
                 self.pong_ball.setx(0)
                 self.pong_ball.sety(0)
-                self.pong_ball.dx *= -1
-                self.pong_ball.dy *= -1
+                self.pong_ball.dx = 1
+                self.pong_ball.dy = 1
                 self.score_board.right_score_update()
             elif self.pong_ball.xcor() > SCREEN_WIDTH / 2:
                 self.pong_ball.setx(0)
                 self.pong_ball.sety(0)
-                self.pong_ball.dx *= -1
-                self.pong_ball.dy *= -1
+                self.pong_ball.dx = -1
+                self.pong_ball.dy = -1
                 self.score_board.left_score_update()
 
             # Checking if the target max score was hit.
             if self.score_board.left_score == MAX_SCORE:
                 self.winning_screen.left_paddle()
                 self.pong_ball.hideturtle()
-                self.game_is_on = False
+                self.game_running = False
 
             elif self.score_board.right_score == MAX_SCORE:
                 self.winning_screen.right_paddle()
                 self.pong_ball.hideturtle()
-                self.game_is_on = False
+                self.game_running = False
 
             # Setting up the wall boundaries for the left paddle.
             if self.left_paddle.ycor() >= (SCREEN_HEIGHT / 2) - 50:
@@ -127,9 +160,9 @@ class Main:
 
             # Setting up the wall boundaries for the right paddle.
             if self.right_paddle.ycor() >= (SCREEN_HEIGHT / 2) - 50:
-                self.right_paddle.sety((SCREEN_HEIGHT / 2) - 50)
+                    self.right_paddle.sety((SCREEN_HEIGHT / 2) - 50)
             elif self.right_paddle.ycor() <= (SCREEN_HEIGHT / -2) + 50:
-                self.right_paddle.sety((SCREEN_HEIGHT / -2) + 50)
+                    self.right_paddle.sety((SCREEN_HEIGHT / -2) + 50)
 
             # Checking if the keys are pressed or not for the right paddle.
             if self.keys_pressed["Up"]:
@@ -149,7 +182,15 @@ class Main:
             # time.sleep used to control the speed of the gameplay.
             time.sleep(0.01)
 
-        self.screen.exitonclick()
+        self.check_play_again()
+
+    def check_play_again(self):
+        self.play_again = self.screen.textinput("Play Again", "Do you want to play again (y/n)?")
+        if self.play_again == "y" or self.play_again == "Y":
+            self.screen.ontimer(self.reset_game_state, 100)
+        else:
+            self.screen.bye()
 
 if __name__ == '__main__':
     main = Main()
+    main.screen.mainloop()
