@@ -7,7 +7,7 @@ import time
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
-MAX_SCORE = 10
+MAX_SCORE = 5
 
 class Main:
     def __init__(self):
